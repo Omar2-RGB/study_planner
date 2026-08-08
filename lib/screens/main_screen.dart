@@ -3,20 +3,20 @@ import 'timer_screen.dart';
 import 'tasks_screen.dart';
 import 'schedule_screen.dart';
 import 'stats_screen.dart';
-
+import 'notes_screen.dart';
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
-
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
   final List<Widget> _screens = [
     const TimerScreen(),
     const TasksScreen(),
     const ScheduleScreen(),
+    const NotesScreen(), // <--- شاشة الملاحظات الجديدة
     const StatsScreen(),
   ];
 
@@ -33,6 +33,7 @@ class _MainScreenState extends State<MainScreen> {
           NavigationDestination(icon: Icon(Icons.timer_rounded), label: 'المؤقت'),
           NavigationDestination(icon: Icon(Icons.task_alt_rounded), label: 'المهام'),
           NavigationDestination(icon: Icon(Icons.calendar_month_rounded), label: 'الجدول'),
+          NavigationDestination(icon: Icon(Icons.note_alt_rounded), label: 'ملاحظات'), // <--- الزر الجديد
           NavigationDestination(icon: Icon(Icons.bar_chart_rounded), label: 'إحصائيات'),
         ],
       ),

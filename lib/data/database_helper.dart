@@ -59,7 +59,16 @@ class DatabaseHelper {
       date $textType
     )
     ''');
+    await db.execute('''
+    CREATE TABLE notes (
+      id $idType,
+      title $textType,
+      content $textType,
+      date $textType
+    )
+    ''');
   }
+
 
   // ==========================================
   // عمليات CRUD الخاصة بـ المهام (Tasks)
@@ -69,7 +78,24 @@ class DatabaseHelper {
     final db = await instance.database;
     return await db.insert('tasks', task.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
+// ==========================================
+  // عمليات الملاحظات السريعة (Notes)
+  // ==========================================
 
+  Future<int> insertNote(Map<String, dynamic> note) async {
+    final db = await instance.database;
+    return await db.insert('notes', note, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<List<Map<String, dynamic>>> getNotes() async {
+    final db = await instance.database;
+    return await db.query('notes', orderBy: 'id DESC');
+  }
+
+  Future<int> deleteNote(int id) async {
+    final db = await instance.database;
+    return await db.delete('notes', where: 'id = ?', whereArgs: [id]);
+  }
   Future<List<Task>> getTasks() async {
     final db = await instance.database;
     final result = await db.query('tasks', orderBy: 'priority DESC, due_date ASC');
