@@ -2,7 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../data/database_helper.dart';
 import '../models/study_session_model.dart';
-import '../models/task_model.dart'; // استدعاء نموذج المهام
+import '../models/task_model.dart';
+import 'about_screen.dart';
 
 class TimerScreen extends StatefulWidget {
   const TimerScreen({super.key});
@@ -21,7 +22,6 @@ class _TimerScreenState extends State<TimerScreen> {
   bool isRunning = false;
   bool isWorkTime = true;
 
-  // -- متغيرات المهام --
   List<Task> pendingTasks = [];
   Task? selectedTask;
 
@@ -29,15 +29,13 @@ class _TimerScreenState extends State<TimerScreen> {
   void initState() {
     super.initState();
     _resetTimerData();
-    _loadPendingTasks(); // تحميل المهام عند فتح الشاشة
+    _loadPendingTasks();
   }
 
-  // جلب المهام غير المكتملة لربطها بالمؤقت
   Future<void> _loadPendingTasks() async {
     final allTasks = await DatabaseHelper.instance.getTasks();
     setState(() {
       pendingTasks = allTasks.where((task) => !task.isCompleted).toList();
-      // اختيار أول مهمة تلقائياً إذا كان هناك مهام
       if (pendingTasks.isNotEmpty && selectedTask == null) {
         selectedTask = pendingTasks.first;
       }
@@ -56,10 +54,9 @@ class _TimerScreenState extends State<TimerScreen> {
         if (secondsRemaining > 0) {
           secondsRemaining--;
         } else {
-          // إذا انتهى وقت التركيز، احفظ الجلسة واربطها بالمهمة المحددة
           if (isWorkTime) {
             final session = StudySession(
-              taskId: selectedTask?.id ?? 0, // ربط الوقت بالـ id الخاص بالمهمة المحددة
+              taskId: selectedTask?.id ?? 0,
               durationMinutes: workMinutes,
               date: DateTime.now(),
             );
@@ -95,26 +92,45 @@ class _TimerScreenState extends State<TimerScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: const Color(0xFF1E1E1E),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text('تخصيص الوقت ⏱️', textAlign: TextAlign.center),
+          title: const Text('تخصيص الوقت ⏱️', textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: workCtrl,
                 keyboardType: TextInputType.number,
+                style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   labelText: 'وقت التركيز (بالدقائق)',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  labelStyle: const TextStyle(color: Colors.grey),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Colors.white24),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Colors.indigoAccent),
+                  ),
                 ),
               ),
               const SizedBox(height: 15),
               TextField(
                 controller: breakCtrl,
                 keyboardType: TextInputType.number,
+                style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   labelText: 'وقت الاستراحة (بالدقائق)',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  labelStyle: const TextStyle(color: Colors.grey),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Colors.white24),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Colors.indigoAccent),
+                  ),
                 ),
               ),
             ],
@@ -122,10 +138,12 @@ class _TimerScreenState extends State<TimerScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('إلغاء'),
+              child: const Text('إلغاء', style: TextStyle(color: Colors.grey)),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.indigoAccent,
+                foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
               onPressed: () {
@@ -154,52 +172,60 @@ class _TimerScreenState extends State<TimerScreen> {
   @override
   Widget build(BuildContext context) {
     double progress = totalSeconds == 0 ? 0 : secondsRemaining / totalSeconds;
-    Color activeColor = isWorkTime ? Colors.indigoAccent : Colors.teal;
-    Color bgColor = isWorkTime ? Colors.indigo.shade50 : Colors.teal.shade50;
+    Color activeColor = isWorkTime ? Colors.indigoAccent : Colors.tealAccent;
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: const Color(0xFF121212), // خلفية داكنة فخمة
       appBar: AppBar(
-        title: const Text('مؤقت الإنجاز', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('مؤقت الإنجاز', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings),
+            icon: const Icon(Icons.info_outline_rounded, color: Colors.white70),
+            tooltip: 'عن التطبيق والمبرمج',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AboutScreen()),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings, color: Colors.white70),
             tooltip: 'تعديل الوقت',
             onPressed: _showEditTimeDialog,
-          )
+          ),
         ],
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // -- قائمة اختيار المهمة للعمل عليها --
             if (isWorkTime) ...[
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 40),
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: const Color(0xFF1E1E1E),
                   borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: Colors.indigo.shade100, width: 2),
+                  border: Border.all(color: Colors.indigoAccent.withOpacity(0.4), width: 1.5),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<Task>(
                     isExpanded: true,
-                    hint: const Text('اختر مهمة للعمل عليها...'),
+                    dropdownColor: const Color(0xFF1E1E1E),
+                    hint: const Text('اختر مهمة للعمل عليها...', style: TextStyle(color: Colors.grey)),
                     value: selectedTask,
-                    icon: const Icon(Icons.keyboard_arrow_down, color: Colors.indigo),
+                    icon: const Icon(Icons.keyboard_arrow_down, color: Colors.indigoAccent),
                     items: pendingTasks.map((Task task) {
                       return DropdownMenuItem<Task>(
                         value: task,
-                        child: Text('🎯 ${task.title}', style: const TextStyle(fontWeight: FontWeight.w600)),
+                        child: Text('🎯 ${task.title}', style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white)),
                       );
                     }).toList(),
                     onChanged: isRunning ? null : (Task? newValue) { 
-                      // لا يمكن تغيير المهمة أثناء عمل المؤقت
                       setState(() {
                         selectedTask = newValue;
                       });
@@ -209,13 +235,13 @@ class _TimerScreenState extends State<TimerScreen> {
               ),
               const SizedBox(height: 20),
             ],
-            // ------------------------------------
 
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(
-                color: bgColor,
+                color: const Color(0xFF1E1E1E),
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: activeColor.withOpacity(0.3)),
               ),
               child: Text(
                 isWorkTime ? 'وقت التركيز 🧠' : 'وقت الاستراحة ☕',
@@ -233,17 +259,17 @@ class _TimerScreenState extends State<TimerScreen> {
                   child: CircularProgressIndicator(
                     value: progress,
                     strokeWidth: 12,
-                    backgroundColor: Colors.grey.shade300,
+                    backgroundColor: Colors.white10,
                     valueColor: AlwaysStoppedAnimation<Color>(activeColor),
                     strokeCap: StrokeCap.round,
                   ),
                 ),
                 Text(
                   timerText,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 60, 
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade800,
+                    color: Colors.white,
                   ),
                 ),
               ],
@@ -265,7 +291,7 @@ class _TimerScreenState extends State<TimerScreen> {
                 else
                   FloatingActionButton.extended(
                     onPressed: pauseTimer,
-                    backgroundColor: Colors.orange,
+                    backgroundColor: Colors.orangeAccent,
                     foregroundColor: Colors.white,
                     icon: const Icon(Icons.pause),
                     label: const Text('إيقاف', style: TextStyle(fontSize: 18)),
@@ -273,7 +299,7 @@ class _TimerScreenState extends State<TimerScreen> {
                 const SizedBox(width: 20),
                 FloatingActionButton(
                   onPressed: stopTimer,
-                  backgroundColor: Colors.red.shade400,
+                  backgroundColor: Colors.redAccent,
                   foregroundColor: Colors.white,
                   tooltip: 'إعادة ضبط',
                   child: const Icon(Icons.refresh),

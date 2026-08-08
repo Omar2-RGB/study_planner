@@ -40,6 +40,7 @@ class _NotesScreenState extends State<NotesScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: const Color(0xFF1E1E1E), // خلفية داكنة للنافذة المنخفضة
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -52,22 +53,40 @@ class _NotesScreenState extends State<NotesScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('ملاحظة سريعة جديدة 📝', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              const Text('ملاحظة سريعة جديدة 📝', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
               const SizedBox(height: 15),
               TextField(
                 controller: titleController,
+                style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   labelText: 'العنوان',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                  labelStyle: const TextStyle(color: Colors.grey),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(color: Colors.white24),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(color: Colors.indigoAccent),
+                  ),
                 ),
               ),
               const SizedBox(height: 15),
               TextField(
                 controller: contentController,
                 maxLines: 4,
+                style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   labelText: 'اكتب ملاحظتك هنا...',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                  labelStyle: const TextStyle(color: Colors.grey),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(color: Colors.white24),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(color: Colors.indigoAccent),
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -77,7 +96,7 @@ class _NotesScreenState extends State<NotesScreen> {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                    backgroundColor: const Color(0xFF3F51B5),
+                    backgroundColor: Colors.indigoAccent,
                     foregroundColor: Colors.white,
                   ),
                   onPressed: () async {
@@ -106,15 +125,15 @@ class _NotesScreenState extends State<NotesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6FA),
+      backgroundColor: const Color(0xFF121212), // خلفية داكنة فخمة
       appBar: AppBar(
-        title: const Text('الملاحظات السريعة 📌', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('الملاحظات السريعة 📌', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator(color: Colors.indigoAccent))
           : notes.isEmpty
               ? const Center(child: Text('لا توجد ملاحظات سريعة بعد.. ابدأ بإضافة ملاحظة! 💡', style: TextStyle(color: Colors.grey, fontSize: 16)))
               : ListView.builder(
@@ -126,20 +145,21 @@ class _NotesScreenState extends State<NotesScreen> {
                       margin: const EdgeInsets.only(bottom: 12),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: const Color(0xFF1E1E1E), // لون كرت داكن فاخر
                         borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.white.withOpacity(0.05)),
                         boxShadow: [
-                          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4)),
+                          BoxShadow(color: Colors.black.withOpacity(0.4), blurRadius: 10, offset: const Offset(0, 4)),
                         ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
-                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
-                                child: Text(note['title'], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                child: Text(note['title'], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                               ),
                               IconButton(
                                 icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
@@ -149,7 +169,7 @@ class _NotesScreenState extends State<NotesScreen> {
                           ),
                           if (note['content'].isNotEmpty) ...[
                             const SizedBox(height: 8),
-                            Text(note['content'], style: const TextStyle(fontSize: 15, color: Colors.black87)),
+                            Text(note['content'], style: const TextStyle(fontSize: 15, color: Colors.white70)),
                           ],
                           const SizedBox(height: 12),
                           Text(note['date'], style: const TextStyle(fontSize: 12, color: Colors.grey)),
@@ -160,7 +180,7 @@ class _NotesScreenState extends State<NotesScreen> {
                 ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddNoteSheet,
-        backgroundColor: const Color(0xFFFF9800),
+        backgroundColor: Colors.indigoAccent,
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),
       ),

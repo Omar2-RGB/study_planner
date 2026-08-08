@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; 
 import '../data/database_helper.dart';
 import '../models/task_model.dart';
-import '../models/study_session_model.dart'; // استدعاء نموذج الجلسات
+import '../models/study_session_model.dart';
 
 class TasksScreen extends StatefulWidget {
   const TasksScreen({super.key});
@@ -13,7 +13,7 @@ class TasksScreen extends StatefulWidget {
 
 class _TasksScreenState extends State<TasksScreen> {
   List<Task> tasks = [];
-  Map<int, int> taskDurations = {}; // قاموس لتخزين (رقم المهمة -> إجمالي الدقائق)
+  Map<int, int> taskDurations = {};
   bool isLoading = false;
 
   @override
@@ -22,20 +22,15 @@ class _TasksScreenState extends State<TasksScreen> {
     _refreshTasks();
   }
 
-  // تحديث قائمة المهام وجلب أوقات العمل عليها
   Future<void> _refreshTasks() async {
     setState(() => isLoading = true);
     
-    // جلب المهام
     final fetchedTasks = await DatabaseHelper.instance.getTasks();
-    
-    // جلب الجلسات لحساب الوقت
     final sessions = await DatabaseHelper.instance.getStudySessions();
     
-    // حساب مجموع الدقائق لكل مهمة
     Map<int, int> durations = {};
     for (var session in sessions) {
-      if (session.taskId != 0) { // نتجاهل المهام العامة (id = 0)
+      if (session.taskId != 0) {
         durations[session.taskId] = (durations[session.taskId] ?? 0) + session.durationMinutes;
       }
     }
@@ -72,8 +67,9 @@ class _TasksScreenState extends State<TasksScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: const Color(0xFF1E1E1E), // خلفية داكنة للنافذة
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (context) {
         return StatefulBuilder(
@@ -86,25 +82,35 @@ class _TasksScreenState extends State<TasksScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('مهمة جديدة', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const Text('مهمة جديدة', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
                   const SizedBox(height: 15),
                   TextField(
                     controller: titleController,
+                    style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'عنوان المهمة',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      labelStyle: const TextStyle(color: Colors.grey),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(color: Colors.white24),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(color: Colors.indigoAccent),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 15),
                   
                   ListTile(
-                    title: const Text('تاريخ الإنجاز'),
-                    subtitle: Text(DateFormat('yyyy-MM-dd').format(selectedDate)),
-                    trailing: const Icon(Icons.calendar_today),
+                    title: const Text('تاريخ الإنجاز', style: TextStyle(color: Colors.grey, fontSize: 13)),
+                    subtitle: Text(DateFormat('yyyy-MM-dd').format(selectedDate), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    trailing: const Icon(Icons.calendar_today, color: Colors.indigoAccent),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      side: BorderSide(color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(15),
+                      side: const BorderSide(color: Colors.white24),
                     ),
+                    tileColor: const Color(0xFF2A2A2A),
                     onTap: () async {
                       final picked = await showDatePicker(
                         context: context,
@@ -118,15 +124,25 @@ class _TasksScreenState extends State<TasksScreen> {
                   const SizedBox(height: 15),
                   
                   DropdownButtonFormField<int>(
-                    initialValue: selectedPriority, // تم استخدام initialValue هنا
+                    value: selectedPriority,
+                    dropdownColor: const Color(0xFF1E1E1E),
+                    style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'الأولوية',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      labelStyle: const TextStyle(color: Colors.grey),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(color: Colors.white24),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(color: Colors.indigoAccent),
+                      ),
                     ),
                     items: const [
-                      DropdownMenuItem(value: 1, child: Text('🔥 عالية')),
-                      DropdownMenuItem(value: 2, child: Text('⚡ متوسطة')),
-                      DropdownMenuItem(value: 3, child: Text('🌱 منخفضة')),
+                      DropdownMenuItem(value: 1, child: Text('🔥 عالية', style: TextStyle(color: Colors.white))),
+                      DropdownMenuItem(value: 2, child: Text('⚡ متوسطة', style: TextStyle(color: Colors.white))),
+                      DropdownMenuItem(value: 3, child: Text('🌱 منخفضة', style: TextStyle(color: Colors.white))),
                     ],
                     onChanged: (value) {
                       if (value != null) setModalState(() => selectedPriority = value);
@@ -139,7 +155,9 @@ class _TasksScreenState extends State<TasksScreen> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                        backgroundColor: Colors.indigoAccent,
+                        foregroundColor: Colors.white,
                       ),
                       onPressed: () async {
                         if (titleController.text.trim().isEmpty) return;
@@ -154,7 +172,7 @@ class _TasksScreenState extends State<TasksScreen> {
                         if (context.mounted) Navigator.pop(context);
                         _refreshTasks(); 
                       },
-                      child: const Text('حفظ المهمة', style: TextStyle(fontSize: 18)),
+                      child: const Text('حفظ المهمة', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -169,14 +187,13 @@ class _TasksScreenState extends State<TasksScreen> {
 
   Color _getPriorityColor(int priority) {
     switch (priority) {
-      case 1: return Colors.red.shade400;
-      case 2: return Colors.orange.shade400;
-      case 3: return Colors.green.shade400;
+      case 1: return Colors.redAccent;
+      case 2: return Colors.orangeAccent;
+      case 3: return Colors.greenAccent;
       default: return Colors.grey;
     }
   }
 
-  // تحويل الدقائق إلى صيغة مقروءة بشكل جميل
   String _formatSpentTime(int minutes) {
     if (minutes == 0) return 'لم تبدأ بعد';
     if (minutes < 60) return 'استغرقت: $minutes دقيقة';
@@ -188,34 +205,41 @@ class _TasksScreenState extends State<TasksScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF121212), // خلفية داكنة فخمة
       appBar: AppBar(
-        title: const Text('مهامي 📝', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('مهامي 📝', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator(color: Colors.indigoAccent))
           : tasks.isEmpty
-              ? const Center(child: Text('لا توجد مهام حالياً. أضف مهمة جديدة!', style: TextStyle(fontSize: 18, color: Colors.grey)))
+              ? const Center(child: Text('لا توجد مهام حالياً. أضف مهمة جديدة!', style: TextStyle(fontSize: 16, color: Colors.grey)))
               : ListView.builder(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(16),
                   itemCount: tasks.length,
                   itemBuilder: (context, index) {
                     final task = tasks[index];
-                    
-                    // جلب الوقت المستغرق لهذه المهمة (أو 0 إذا لم نعمل عليها بعد)
                     final spentMinutes = taskDurations[task.id] ?? 0;
 
-                    return Card(
-                      elevation: 2,
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        side: BorderSide(color: _getPriorityColor(task.priority), width: 1.5),
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF1E1E1E), // كرت داكن فاخر
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: _getPriorityColor(task.priority).withOpacity(0.5), width: 1.5),
+                        boxShadow: [
+                          BoxShadow(color: Colors.black.withOpacity(0.4), blurRadius: 10, offset: const Offset(0, 4)),
+                        ],
                       ),
                       child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         leading: Checkbox(
                           value: task.isCompleted,
                           activeColor: _getPriorityColor(task.priority),
+                          checkColor: Colors.black,
+                          side: const BorderSide(color: Colors.white54),
                           onChanged: (value) => _toggleTaskStatus(task),
                         ),
                         title: Text(
@@ -224,10 +248,9 @@ class _TasksScreenState extends State<TasksScreen> {
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                             decoration: task.isCompleted ? TextDecoration.lineThrough : null,
-                            color: task.isCompleted ? Colors.grey : Colors.black87,
+                            color: task.isCompleted ? Colors.grey : Colors.white,
                           ),
                         ),
-                        // تعديل هنا: دمج التاريخ مع الوقت المستغرق
                         subtitle: Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Column(
@@ -239,19 +262,19 @@ class _TasksScreenState extends State<TasksScreen> {
                                   const SizedBox(width: 5),
                                   Text(
                                     DateFormat('yyyy-MM-dd').format(task.dueDate),
-                                    style: TextStyle(color: task.isCompleted ? Colors.grey : Colors.black54),
+                                    style: TextStyle(color: task.isCompleted ? Colors.grey : Colors.white60),
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 5),
                               Row(
                                 children: [
-                                  Icon(Icons.timer, size: 14, color: spentMinutes > 0 ? Colors.indigo : Colors.grey),
+                                  Icon(Icons.timer, size: 14, color: spentMinutes > 0 ? Colors.indigoAccent : Colors.grey),
                                   const SizedBox(width: 5),
                                   Text(
                                     _formatSpentTime(spentMinutes),
                                     style: TextStyle(
-                                      color: spentMinutes > 0 ? Colors.indigo : Colors.grey,
+                                      color: spentMinutes > 0 ? Colors.indigoAccent : Colors.grey,
                                       fontWeight: spentMinutes > 0 ? FontWeight.bold : FontWeight.normal,
                                     ),
                                   ),
@@ -261,7 +284,7 @@ class _TasksScreenState extends State<TasksScreen> {
                           ),
                         ),
                         trailing: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.redAccent),
+                          icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
                           onPressed: () => _deleteTask(task.id!),
                         ),
                       ),
@@ -270,6 +293,8 @@ class _TasksScreenState extends State<TasksScreen> {
                 ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddTaskSheet,
+        backgroundColor: Colors.indigoAccent,
+        foregroundColor: Colors.white,
         child: const Icon(Icons.add),
       ),
     );

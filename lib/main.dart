@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/main_screen.dart';
-
+import 'screens/splash_screen.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const StudyPlannerApp());
@@ -36,7 +36,7 @@ class StudyPlannerApp extends StatelessWidget {
           titleTextStyle: TextStyle(color: Color(0xFF1A1A1A), fontSize: 22, fontWeight: FontWeight.bold),
         ),
       ),
-      home: const MainScreen(),
+      home: const SplashScreen(),
     );
   }
 }
