@@ -1,0 +1,35 @@
+name: study_planner
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  sqflite: ^2.4.3
+  path_provider: ^2.1.6
+  table_calendar: ^3.2.0
+  intl: ^0.20.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.3
+
+flutter:
+  uses-material-design: true
+
+  # أضفنا قسم assets لاستخدام الأيقونة لاحقاً
+  assets:
+    - assets/
+
+# إعدادات الأيقونة
+flutter_launcher_icons:
+  image_path: "assets/icon.png"
+  android: true
+  ios: true
