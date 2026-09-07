@@ -16,7 +16,7 @@ dependencies:
   intl: ^0.20.3
   sqflite_common_ffi_web: ^1.1.2
   shared_preferences: ^2.3.5
-  google_mobile_ads: 5.2.0
+  google_mobile_ads: ^9.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
