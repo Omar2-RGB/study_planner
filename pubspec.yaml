@@ -14,7 +14,9 @@ dependencies:
   path_provider: ^2.1.6
   table_calendar: ^3.2.0
   intl: ^0.20.3
-
+  sqflite_common_ffi_web: ^1.1.2
+  shared_preferences: ^2.3.5
+  google_mobile_ads: 5.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -27,9 +29,10 @@ flutter:
   # أضفنا قسم assets لاستخدام الأيقونة لاحقاً
   assets:
     - assets/
-
 # إعدادات الأيقونة
 flutter_launcher_icons:
-  image_path: "assets/icon.png"
   android: true
   ios: true
+  web:
+    generate: true
+  image_path: "assets/icon.png"

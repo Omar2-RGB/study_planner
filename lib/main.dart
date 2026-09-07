@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart'; // حزمة الإعلانات
+
 import 'screens/main_screen.dart';
 import 'screens/splash_screen.dart';
-void main() {
+
+void main() async {
+  // ضروري جداً لضمان عمل ربط الإعلانات وفلاتر بشكل سليم قبل تشغيل التطبيق
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // تهيئة منصة الإعلانات لجوجل AdMob
+  await MobileAds.instance.initialize();
+
   runApp(const StudyPlannerApp());
 }
 
@@ -23,7 +31,6 @@ class StudyPlannerApp extends StatelessWidget {
           surface: Colors.white,
         ),
         scaffoldBackgroundColor: const Color(0xFFF4F6FA),
-        // تم استخدام CardThemeData بدلاً من CardTheme لتتوافق مع الإصدار الحديث
         cardTheme: CardThemeData(
           elevation: 0,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
