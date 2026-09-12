@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'main_screen.dart';
+import 'adsense_banner.dart';
 
 class IntroScreen extends StatelessWidget {
   const IntroScreen({super.key});
@@ -53,7 +54,7 @@ class IntroScreen extends StatelessWidget {
 
                   const SizedBox(height: 25),
 
-                  // العنوان
+                  // اسم التطبيق
                   const Text(
                     'إنجاز | Engaz',
                     textAlign: TextAlign.center,
@@ -78,7 +79,7 @@ class IntroScreen extends StatelessWidget {
 
                   const SizedBox(height: 25),
 
-                  // الوصف الرئيسي
+                  // تعريف التطبيق
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(24),
@@ -117,7 +118,12 @@ class IntroScreen extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  // الميزات
+                  // إعلان Google AdSense
+                  const AdsenseBanner(),
+
+                  const SizedBox(height: 30),
+
+                  // عنوان الميزات
                   const Align(
                     alignment: Alignment.centerRight,
                     child: Text(
@@ -132,6 +138,7 @@ class IntroScreen extends StatelessWidget {
 
                   const SizedBox(height: 15),
 
+                  // مؤقت التركيز
                   _FeatureCard(
                     icon: Icons.timer_rounded,
                     title: 'مؤقت التركيز',
@@ -139,6 +146,7 @@ class IntroScreen extends StatelessWidget {
                         'استخدم المؤقت لتنظيم جلسات الدراسة والعمل وتقليل التشتت وزيادة تركيزك.',
                   ),
 
+                  // إدارة المهام
                   _FeatureCard(
                     icon: Icons.task_alt_rounded,
                     title: 'إدارة المهام',
@@ -146,6 +154,7 @@ class IntroScreen extends StatelessWidget {
                         'أضف مهامك اليومية وتابع ما أنجزته حتى تبقى على اطلاع دائم بتقدمك.',
                   ),
 
+                  // الجدول
                   _FeatureCard(
                     icon: Icons.calendar_month_rounded,
                     title: 'الجدول',
@@ -153,6 +162,7 @@ class IntroScreen extends StatelessWidget {
                         'رتّب مواعيدك ودراستك وأنشطتك اليومية ضمن جدول واضح ومنظم.',
                   ),
 
+                  // الملاحظات
                   _FeatureCard(
                     icon: Icons.note_alt_rounded,
                     title: 'الملاحظات',
@@ -160,6 +170,7 @@ class IntroScreen extends StatelessWidget {
                         'احتفظ بأفكارك وملاحظاتك المهمة داخل التطبيق لتصل إليها بسهولة عندما تحتاجها.',
                   ),
 
+                  // الإحصائيات
                   _FeatureCard(
                     icon: Icons.bar_chart_rounded,
                     title: 'الإحصائيات',
@@ -169,7 +180,7 @@ class IntroScreen extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  // قسم لمن يناسبه التطبيق
+                  // لمن صمم التطبيق
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(24),
@@ -250,6 +261,8 @@ class IntroScreen extends StatelessWidget {
                       fontSize: 13,
                     ),
                   ),
+
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
