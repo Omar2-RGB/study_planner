@@ -254,7 +254,7 @@ class IntroScreen extends StatelessWidget {
                   const SizedBox(height: 18),
 
                   const Text(
-                    'إنجاز — رفيقك لتنظيم الوقت والدراسة',
+'إنجاز — رفيقك لتنظيم الوقت والدراسة والتركيز',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white38,
